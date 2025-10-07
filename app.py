@@ -4,10 +4,7 @@ import streamlit as st
 import csv
 from pathlib import Path
 from datetime import datetime
-import streamlit as st
-import csv
-from pathlib import Path
-from datetime import datetime
+
 
 st.title("Rental Request Form")
 
@@ -23,6 +20,7 @@ if st.button("Submit"):
     else:
         st.success("Request submitted ✅")
         
+        print(f"Name: {name}, Email: {email}, Request: {request}")
         # Save to CSV in the background
         file_path = Path("requests.csv")
         file_exists = file_path.is_file()
