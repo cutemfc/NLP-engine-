@@ -1,11 +1,11 @@
 
-
 import streamlit as st
 import csv
 from pathlib import Path
 from datetime import datetime
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2.service_account import Credentials
 
 
 st.title("Rental Request Form")
@@ -31,16 +31,25 @@ if st.button("Submit"):
             if not file_exists:
                 writer.writerow(["timestamp", "name", "email", "request"])  # header
             writer.writerow([datetime.now().isoformat(), name, email, request])
+    
         # Save  to Google Sheets
-        try:
-            scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-            creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+            
+    try:
+            # Read credentials from Streamlit Secrets
+            creds = Credentials.from_service_account_info(st.secrets["google"])
+
+            # Authorize the client
             client = gspread.authorize(creds)
-            sheet = client.open("House Requests").sheet1  # Open the Google Sheet
-            sheet.append_row([datetime.now().isoformat(), name, email, request])  #
-            st.info("Data saved to Google Sheets.")
-        except Exception as e:
-            st.error(f"Failed to save to Google Sheets: {e}")
+
+            # Open the target sheet
+            sheet = client.open("House Requests").sheet1
+            sheet.append_row([datetime.now().isoformat(), name, email, request])
+
+            st.success("📊 Data also saved to Google Sheets.")
+    except Exception as e:
+            st.error(f"❌ Failed to save to Google Sheets: {e}")
+    
+    
         
 
 
