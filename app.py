@@ -36,7 +36,15 @@ if st.button("Submit"):
             
     try:
             # Read credentials from Streamlit Secrets
-            creds = Credentials.from_service_account_info(st.secrets["google"])
+            google_creds= st.secrets["google"]
+            
+
+            # Define the scope
+            scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+             
+
+            # create a Credentials object from the dictionary
+            creds= Credentials.from_service_account_info(google_creds, scopes=scope)
 
             # Authorize the client
             client = gspread.authorize(creds)
