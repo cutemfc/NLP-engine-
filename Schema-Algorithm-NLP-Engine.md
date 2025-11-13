@@ -10,8 +10,8 @@ The output format is JSON, enabling downstream systems (recommedener system) to 
   'theme': 'default',
   'themeVariables': {
     'fontSize': '12px',
-    'nodeSpacing': 18,
-    'rankSpacing': 20
+    'nodeSpacing': 20,
+    'rankSpacing': 30
   },
   'flowchart': {
     'curve': 'linear'
@@ -20,29 +20,29 @@ The output format is JSON, enabling downstream systems (recommedener system) to 
 
 flowchart TD
     %% Top-level steps
-    A0["Step 0 — User Input Reception"]
-    A1["Step 1 — Text Preprocessing       (rule-based normalization)" ]
-    A2["Step 2 a — Feature Extraction (prompt template construction:instruction + target format)"]
-    A3["Step 2 b - Feature Extraction (T5 tokenizer,Tokenization and Labeling Mapping)"]
+    A0["Step 0:User Input Reception"]
+    A1["Step 1:Text Preprocessing(rule-based normalization)"]
+    A2["Step 2a:Feature Extraction(prompt)"]
+    A3["Step 2b:Feature Extraction(T5 token)"]
     
     %% Training process
-    A4["Step 3- Load T5 Base Model"]
-    A5["Step 4- LoRA Fine Tuning"]
+    A4["Step 3:Load T5 Base Model"]
+    A5["Step 4:LoRA Fine Tuning"]
    
     %% Intent classfication
-    B1["Step Optional- Intent classification(T5, renting species)"]
+    B1["Optional:Intent classification(T5)"]
    
 
     %% Parallel extraction branches
-    C1["Step 5a — Rule-based Entity Extraction: clear value + parameters"]
-    C2["Step 5b — T5-based Entity Extraction : vauge, context-aware"]
+    C1["Step 5a:Rule-based Entity Extraction: clear value + parameters"]
+    C2["Step 5b:T5-based Entity Extraction : vauge, context-aware"]
     
     %% Merging and final steps
-    D1["Step 6 — Entity Merge & Parameter Mapping : rule based overwrite the t5 based entity"]
+    D1["Step 6:Entity Merge+Parameter Map : rule based overwrite the t5 based entity"]
 
     %% Ouput Corrections
-    E1["Step 7— Direct JSON Parse"]
-    E2["Step 8 — JSON Repair /Fallback(regex, cleanup)"]
+    E1["Step 7:Direct JSON Parse"]
+    E2["Step 8:JSON Repair/Fallback(regex)"]
 
     %% Final
     F0["Step 9-Final Json Output"]
@@ -185,7 +185,7 @@ classical NLP feature engineering.
 
 **Preprcessing:** Fine tunibng using LoRA(Low Rank Adaption) for domain-specific knowledge
 
-### step option: Intent Classfication (House, Apartment, Shared room)
+### step optional: Intent Classfication (House, Apartment, Shared room)
 **Input:** tokenized input or cleaned text
 
 **Output:** intent label: House
@@ -193,7 +193,7 @@ classical NLP feature engineering.
 **Preprcessing:** Using T5 (or SBRET) to determine user intent(e.g renting an apartment)
 
 
-### Step 5a Rule-based Entity Extraction
+### Step 5a: Rule-based Entity Extraction
 **Input:** Cleaned text from  step 1
 
 **Output:** Dictionary of clear entities
@@ -252,34 +252,47 @@ T5 (Text-to-Text Transfer Transformer) is selected as the core model because it 
 ✅**Unified text-to-text paradigm**
 We don’t need separate models for:
 classification (intent)
+
 entity extraction
+
 normalization
+
 response formatting
 
 T5 handles them all as a single generative task.
 
 ✅**Perfect for structured output**
 T5 has strong performance in tasks that require:
+
 schema-bounded responses
+
 structured text like JSON
+
 long-form reasoning over inputs
 
 This makes it easier to ensure the output fits our housing search JSON template.
 
 ✅**Context-aware understanding**
 Housing queries often include nuance:
+
 "somewhere near the city center"
+
 "affordable but modern"
+
 "2 beds or maybe 3 if in suburbs"
 
 ✅**Efficient fine-tuning (LoRA-friendly)**
 We can customize T5 on a domain-specific housing dataset using LoRA adapters, which means:
+
 No full retraining
+
 Low compute cost
+
 Fast iteration cycles
 
 ✅**Robust multilingual capability**
-T5-base and multilingual variants help cover housing markets and user populations across languages (e.g., English + German, CN→EN future extension).
+T5-base and multilingual variants help cover housing markets and user populations across languages 
+(e.g., English + German, CN→EN future extension).
 
 # 🎯  **Bottom Line** 
 | Challenge                    | Solution in your design      |
